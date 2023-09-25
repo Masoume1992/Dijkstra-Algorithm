@@ -1,0 +1,85 @@
+import time
+start_time = time.time()
+from collections import defaultdict
+
+class Graph():
+    def __init__(self):
+        self.edges = defaultdict(list)
+        self.weights = {}
+    def addEdge(self, fromVertex, toVertex, weight):
+        self.edges[fromVertex].append(toVertex)
+        self.weights[(fromVertex, toVertex)] = weight
+
+def dijkstra(Graph, initial, end):
+    shortestPaths = {initial: (None, 0)}
+    currentVertex = initial
+    visited = set()
+    while currentVertex != end:
+        visited.add(currentVertex)
+        destinations = graph.edges[currentVertex]
+        weightToCurrentVertex = shortestPaths[currentVertex][1]
+        for nextVertex in destinations:
+            weight = graph.weights[(currentVertex, nextVertex)] + weightToCurrentVertex
+            if nextVertex not in shortestPaths:
+                shortestPaths[nextVertex] = (currentVertex, weight)
+            else:
+                currentShortestWeight = shortestPaths[nextVertex][1]
+                if currentShortestWeight > weight:
+                    shortestPaths[nextVertex] = (currentVertex, weight)
+
+        nextDestinations = {vertex: shortestPaths[vertex] for vertex in shortestPaths if vertex not in visited}
+        if not nextDestinations:
+            return "Route Not Possible"
+        currentVertex = min(nextDestinations, key=lambda k: nextDestinations[k][1])
+    path = []
+    while currentVertex is not None:
+        path.append(currentVertex)
+        nextVertex = shortestPaths[currentVertex][0]
+        currentVertex = nextVertex
+    path = path[: : -1]
+    return path
+graph = Graph()
+
+f = open("E:\SiouxFalls_net.tntp")
+list_of_lists = []
+for line in f:
+    stripped_line = line.strip()
+    line_list = stripped_line. split()
+    list_of_lists. append(line_list)
+f. close()
+firststepcleansinglist =list_of_lists[9:]
+final_list =firststepcleansinglist
+def column(final_list, i):
+    return [row[i] for row in final_list]
+initnode = column (final_list,0)
+termnode= column(final_list, 1)
+Free_flow_time= column(final_list, 4)
+list=[]
+i=0
+for i in range(0,76):
+       d=((str((initnode[i])),str((termnode[i])),int((Free_flow_time[i]))))
+       list.append(d)
+       i+=1
+edges = list
+for edge in edges:
+    graph.addEdge(*edge)
+
+from colorama import Fore
+dij=dijkstra(graph,input("Init_Node: "), input("Term_Node: "))
+print(Fore.GREEN+"Shortest Path: "+str(dij))
+
+list1=[]
+k=0
+for k in range(0,len(dij)-1):
+  ref=((dij[k],dij[k+1]))
+  list1.append(ref)
+  k+=1
+
+cost=0
+for w in range(len(edges)):
+    for q in range(len(list1)):
+        if list1[q][0]==edges[w][0] and list1[q][1]==edges[w][1]:
+          cost+=int((edges[w][2]))
+print(Fore.LIGHTBLUE_EX+"Travel Time :" + str(cost))
+
+
